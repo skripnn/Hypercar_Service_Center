@@ -1,10 +1,11 @@
 from django.views import View
 from django.http.response import HttpResponse
 from django.shortcuts import render
+from collections import deque
 
-line_of_cars = {'change_oil': [],
-                'inflate_tires': [],
-                'diagnostic': []}
+line_of_cars = {'change_oil': deque(),
+                'inflate_tires': deque(),
+                'diagnostic': deque()}
 
 id_ticket = 0
 
@@ -28,11 +29,6 @@ class GetTicket(View):
     template_name = 'tickets/get_ticket.html'
     ticket_type = None
 
-    def start(self, ticket_type):
-        self.ticket_type = ticket_type
-        print(self.ticket_type)
-        self.as_view()
-
     def get(self, request, ticket_type):
         self.ticket_type = ticket_type
         context = self.getting_number()
@@ -40,6 +36,7 @@ class GetTicket(View):
 
     def getting_number(self):
         global id_ticket
+        print(id_ticket)
         if self.ticket_type in line_of_cars.keys():
             minutes = self.count_waiting_time()
             id_ticket += 1
@@ -57,3 +54,25 @@ class GetTicket(View):
             return inflate_tires
         if self.ticket_type == 'diagnostic':
             return diagnostic
+
+
+class Processing(View):
+    template_name = 'tickets/processing.html'
+
+    def get(self, request):
+        context = {'change_oil': len(line_of_cars['change_oil']),
+                   'inflate_tires': len(line_of_cars['inflate_tires']),
+                   'diagnostic': len(line_of_cars['diagnostic'])}
+        return render(request, self.template_name, context=context)
+
+    def post(self, request):
+        next_ticket = None
+        if len(line_of_cars['change_oil']) > 0:
+            next_ticket = 'change_oil'
+        elif len(line_of_cars['inflate_tires']) > 0:
+            next_ticket = 'inflate_tires'
+        elif len(line_of_cars['diagnostic']) > 0:
+            next_ticket = 'diagnostic'
+        if next_ticket is not None:
+            line_of_cars[next_ticket].popleft()
+        return self.get(request)
