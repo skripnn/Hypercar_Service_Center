@@ -36,7 +36,6 @@ class GetTicket(View):
 
     def getting_number(self):
         global id_ticket
-        print(id_ticket)
         if self.ticket_type in line_of_cars.keys():
             minutes = self.count_waiting_time()
             id_ticket += 1
