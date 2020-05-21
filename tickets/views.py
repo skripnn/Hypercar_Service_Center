@@ -33,7 +33,8 @@ class GetTicket(View):
         print(self.ticket_type)
         self.as_view()
 
-    def get(self, request):
+    def get(self, request, ticket_type):
+        self.ticket_type = ticket_type
         context = self.getting_number()
         return render(request, self.template_name, context=context)
 

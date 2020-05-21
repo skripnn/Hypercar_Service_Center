@@ -13,11 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
-from tickets.views import WelcomeView, MenuView, GetTicket
+from django.urls import path, include
+
 
 urlpatterns = [
-    path('welcome/', WelcomeView.as_view()),
-    path('menu/', MenuView.as_view()),
-    path('get_ticket/?P<ticket_type>\w{0,50}', GetTicket.start)
+    path('', include('tickets.urls'))
 ]
