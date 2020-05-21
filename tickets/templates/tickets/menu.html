@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Menu</title>
-</head>
-<body>
-    {% for link, description in menu.items %}
-        <div><a target="_blank" href="/get_ticket/{{ link }}">{{ description }}</a></div>
-    {% endfor %}
-</body>
-</html>
+{% extends "tickets/base.html" %}
+{% block title %}
+{{ block.super }} – Menu
+{% endblock %}
+{% block content %}
+{% for link, description in menu.items %}
+    <div><a target="_blank" href="/get_ticket/{{ link }}">{{ description }}</a></div>
+{% endfor %}
+{% endblock %}

@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Menu</title>
-</head>
-<body>
+{% extends "tickets/base.html" %}
+{% block title %}
+{{ block.super }} – Get Ticket
+{% endblock %}
+{% block content %}
     <div>Your number is {{ id_ticket }}</div>
     <div>Please wait around {{ minutes }} minutes</div>
-</body>
-</html>
+{% endblock %}

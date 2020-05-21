@@ -26,22 +26,27 @@ class MenuView(View):
 
 class GetTicket(View):
     template_name = 'tickets/get_ticket.html'
+    ticket_type = None
+
+    def start(self, ticket_type):
+        self.ticket_type = ticket_type
+        print(self.ticket_type)
+        self.as_view()
 
     def get(self, request):
-        context = self.getting_number(request)
+        context = self.getting_number()
         return render(request, self.template_name, context=context)
 
-    def getting_number(self, request):
+    def getting_number(self):
         global id_ticket
         if self.ticket_type in line_of_cars.keys():
-            minutes = self.count_waiting_time(request)
+            minutes = self.count_waiting_time()
             id_ticket += 1
             line_of_cars[self.ticket_type].append(id_ticket)
             return {'id_ticket': str(id_ticket),
                     'minutes': str(minutes)}
 
-    def count_waiting_time(self, request):
-        global id_ticket
+    def count_waiting_time(self):
         change_oil = len(line_of_cars['change_oil']) * 2
         inflate_tires = change_oil + len(line_of_cars['inflate_tires']) * 5
         diagnostic = inflate_tires + len(line_of_cars['diagnostic']) * 30
@@ -51,15 +56,3 @@ class GetTicket(View):
             return inflate_tires
         if self.ticket_type == 'diagnostic':
             return diagnostic
-
-
-class ChangeOil(GetTicket):
-    ticket_type = 'change_oil'
-
-
-class InflateTires(GetTicket):
-    ticket_type = 'inflate_tires'
-
-
-class Diagnostic(GetTicket):
-    ticket_type = 'diagnostic'
