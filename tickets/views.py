@@ -8,6 +8,7 @@ line_of_cars = {'change_oil': deque(),
                 'diagnostic': deque()}
 
 id_ticket = 0
+number_of_ticket = None
 
 
 class WelcomeView(View):
@@ -66,6 +67,7 @@ class Processing(View):
 
     def post(self, request):
         next_ticket = None
+        global number_of_ticket
         if len(line_of_cars['change_oil']) > 0:
             next_ticket = 'change_oil'
         elif len(line_of_cars['inflate_tires']) > 0:
@@ -73,5 +75,15 @@ class Processing(View):
         elif len(line_of_cars['diagnostic']) > 0:
             next_ticket = 'diagnostic'
         if next_ticket is not None:
-            line_of_cars[next_ticket].popleft()
+            number_of_ticket = line_of_cars[next_ticket].popleft()
+        else:
+            number_of_ticket = None
         return self.get(request)
+
+
+class Next(View):
+    template_name = 'tickets/next.html'
+
+    def get(self, request):
+        context = {'number_of_ticket': number_of_ticket}
+        return render(request, self.template_name, context=context)
